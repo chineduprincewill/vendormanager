@@ -166,6 +166,7 @@ const VendorScoringForm = ({ setShowVendorScoringForm, vendor }) => {
                                                         <select 
                                                             className='w-full p-2 rounded-md border border-gray-400 bg-transparent'
                                                             name={"serial_number"+data?.serial_no}
+                                                            required
                                                             onChange={(e) => {
                                                                 updateCalc(e.target.value, data?.serial_no);
                                                                 setValue(e);
