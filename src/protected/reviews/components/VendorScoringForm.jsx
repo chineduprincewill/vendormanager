@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AiOutlineCloseCircle, AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
+import { AiOutlineCloseCircle, AiOutlineLoading3Quarters, AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
 import { AppContext } from '../../../context/AppContext';
-import { fetchVendorScoringFormData } from '../../../apis/vendorsActions';
+import { fetchVendorScoringFormData, submitVendorScoring } from '../../../apis/vendorsActions';
 import LoadingBars from '../../../common/LoadingBars';
 
 const VendorScoringForm = ({ setShowVendorScoringForm, vendor }) => {
 
-    const { token, logout } = useContext(AppContext);
+    const { token, refreshRecord, logout } = useContext(AppContext);
     const [formdata, setFormdata] = useState();
     const [error, setError] = useState(null);
     const [fetching, setFetching] = useState(false);
@@ -15,8 +15,11 @@ const VendorScoringForm = ({ setShowVendorScoringForm, vendor }) => {
     const [grr, setGrr] = useState(0);
     const [prr, setPrr] = useState(0);
     const [total, setTotal] = useState(0);
-    const [fmdata, setFmdata] = useState({});
-
+    const [fmdata, setFmdata] = useState([]);
+    const [storeSelections, setStoredSelections] = useState([]);
+    const [success, setSuccess] = useState();
+    const [submitting, setSubmitting] = useState(false);
+ 
     if(formdata?.status && formdata?.status === 'Token is Expired'){
         logout();
     }
@@ -33,52 +36,74 @@ const VendorScoringForm = ({ setShowVendorScoringForm, vendor }) => {
 
     const setValue = (e) => {
         const {name, value} = e.target;
-        setFmdata({
+        setFmdata([
             ...fmdata,
-            [name] : value
-        })
+            parseInt(value)
+        ])
     }
 
     const updateEntry = (serial) => {
-        let result;
-
         if(serial === "10.1"){
-            result = grr;
+            return grr;
         }
         if(serial === "15"){
-            result = prr;
+            return prr;
         }
         if(serial === "16"){
-            result = total;
+            return total;
         }
-
-        return result;
     }
 
     const updateCalc = (val, serial) => {
-        if(parseInt(serial) < 11){
-            setGrr(parseInt(grr) + parseInt(val));
-        }
-        if(parseInt(serial) >= 11 && parseInt(serial) < 15){
-            setPrr(parseInt(prr) + parseInt(val))
-        }
-
-        console.log(val);
         console.log(serial);
+        storeSelections[serial] = parseInt(val);
+    }
 
-        console.log(grr);
-        console.log(prr);
+    const updateSummation = () => {
+        let total = 0;
+        let total2 = 0;
+        (storeSelections && storeSelections.length > 0) && 
+            storeSelections.map((item, index) => {
+                if(index >= 1 && index <= 10){
+                    total += item
+                }
+                else if(index >= 11 && index < 15){
+                    total2 += item
+                }
+            }
+        )
+        setGrr(total);
+        setPrr(total2);
     }
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
+        
+        let company_name = vendor[0];
+        let email = vendor[1];
 
-        console.log(fmdata);
+        const data = {
+            company_name,
+            email,
+            fmdata
+        };
+
+        submitVendorScoring(token, data, setSuccess, setError, setSubmitting);
+        //console.log(data);
+    }
+
+    if(success){
+        refreshRecord(Date.now());
+        setTimeout(() => setShowVendorScoringForm(false), 2000)
     }
 
     useEffect(() => {
         fetchVendorScoringFormData(token, { email: vendor[1]}, setFormdata, setError, setFetching)
     }, [])
+
+    useEffect(() => {
+        updateSummation();
+    }, [updateCalc])
 
     useEffect(() => {
         setTotal(grr+prr);
@@ -153,11 +178,17 @@ const VendorScoringForm = ({ setShowVendorScoringForm, vendor }) => {
                                                 </div>
                                             ))
                                         }
-                                            <button
-                                                className={`w-full md:w-48 flex justify-center p-2 rounded-md bg-[#a8d13a] hover:bg-[#85a62a] text-black`}
-                                            >
-                                               Submit
-                                            </button>
+                                            <div className='grid md:flex md:gap-4 md:items-center space-y-4 md:space-y-0'>
+                                                <button
+                                                    className={`w-full md:w-48 flex justify-center p-2 rounded-md bg-[#a8d13a] hover:bg-[#85a62a] text-black`}
+                                                >
+                                                    {
+                                                        submitting ? 
+                                                            <AiOutlineLoading3Quarters size={24} className='animate-spin' /> : 'Submit'
+                                                    }
+                                                </button>
+                                                <span className='text-lg text-[#54c5d0]'>{success && success?.success}</span>
+                                            </div>
                                         </form>
                                     </div>
                                     <div className='w-full'>

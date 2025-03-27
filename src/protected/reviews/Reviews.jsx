@@ -9,7 +9,7 @@ import VendorScoringForm from './components/VendorScoringForm';
 
 const Reviews = () => {
 
-    const { token, logout } = useContext(AppContext);
+    const { token, record, logout } = useContext(AppContext);
     const [filter, setFilter] = useState("");
     const [vendors, setVendors] = useState(null);
     const [error, setError] = useState(null);
@@ -33,12 +33,12 @@ const Reviews = () => {
         },
         {
             name: "Score",
-            selector: (row) => row?.score,
+            selector: (row) => row?.score ? row?.score : row?.vendor_score,
             filterable: true,
             sortable: true,
             cell: (row) => (
                 <div className='w-full'>
-                    {row?.score}
+                    {row?.score ? row?.score : row?.vendor_score}
                 </div>
             )
         },
@@ -117,7 +117,7 @@ const Reviews = () => {
 
     useEffect(() => {
         fetchAllVendors(token, setVendors, setError, setFetching);
-    }, [])
+    }, [record])
 
     return (
         <div className='w-full m-0'>

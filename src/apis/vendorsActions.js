@@ -81,3 +81,31 @@ export const fetchVendorScoringFormData = async ( token, data, setFormdata, setE
 
     setFetching(false);
 }
+
+
+export const submitVendorScoring = async ( token, data, setSuccess, setError, setSubmitting ) => {
+
+    setSubmitting(true);
+
+    try{
+        const response  = await axios.post(`submit-vendor-scores`,
+            data,
+            {
+                headers: { 'Accept' : 'application/json', 'Authorization' : `Bearer ${token}` }
+            }
+        );    
+
+        console.log(response.data);
+        setSuccess(response.data);
+    }
+    catch (err) {
+        if (!err?.response) {
+            setError('No Response from Server');
+        } else {
+            console.log(err.response.data);
+            setError(err.response.data);
+        }
+    }
+
+    setSubmitting(false);
+}
