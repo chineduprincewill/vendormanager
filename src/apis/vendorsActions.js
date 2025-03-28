@@ -109,3 +109,31 @@ export const submitVendorScoring = async ( token, data, setSuccess, setError, se
 
     setSubmitting(false);
 }
+
+
+export const getVendorDataForCategorization = async ( token, data, setVendordata, setError, setFetching ) => {
+
+    setFetching(true);
+
+    try{
+        const response  = await axios.post(`vendor-categorization-form`,
+            data,
+            {
+                headers: { 'Accept' : 'application/json', 'Authorization' : `Bearer ${token}` }
+            }
+        );    
+
+        console.log(response.data);
+        setVendordata(response.data);
+    }
+    catch (err) {
+        if (!err?.response) {
+            setError('No Response from Server');
+        } else {
+            console.log(err.response.data);
+            setError(err.response.data);
+        }
+    }
+
+    setFetching(false);
+}

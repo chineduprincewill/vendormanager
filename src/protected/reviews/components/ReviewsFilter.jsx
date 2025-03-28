@@ -11,6 +11,7 @@ const ReviewsFilter = ({ setFilter }) => {
             >
                 <option className='dark:bg-gray-800' value="">select status</option>
                 <option className='dark:bg-gray-800' value="Awaiting scoring">Awaiting scoring</option>
+                <option className='dark:bg-gray-800' value="Awaiting categorization">Awaiting categorization</option>
                 <option className='dark:bg-gray-800' value="Awaiting review">Awaiting review</option>
                 <option className='dark:bg-gray-800' value="Approved">Approved</option>
                 <option className='dark:bg-gray-800' value="Rejected">Rejected</option>

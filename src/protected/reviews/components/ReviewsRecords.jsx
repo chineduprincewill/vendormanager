@@ -14,7 +14,13 @@ const ReviewsRecords = ({ columns, data, filter }) => {
         if(filter !== ""){
             if(filter === "Awaiting scoring"){
                 filtered = data.filter(dt => (
-                    dt?.completed_by === "" || !dt?.completed_by || dt?.completed_by === null
+                    dt?.vendor_score === "" || !dt?.vendor_score || dt?.vendor_score === null
+                ));
+            }
+            else if(filter === "Awaiting categorization"){
+                filtered = data.filter(dt => (
+                    (dt?.vendor_score !== "" && dt?.vendor_score && dt?.vendor_score !== null) &&
+                    (dt?.completed_by === "" || !dt?.completed_by || dt?.completed_by === null)
                 ));
             }
             else if(filter === "Awaiting review"){

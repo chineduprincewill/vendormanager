@@ -6,6 +6,8 @@ import { fetchAllVendors } from '../../apis/registrationsActions';
 import LoadingBars from '../../common/LoadingBars';
 import ReviewsRecords from './components/ReviewsRecords';
 import VendorScoringForm from './components/VendorScoringForm';
+import VendorDetail from '../vendors/components/VendorDetail';
+import VendorCategorizationForm from './components/VendorCategorizationForm';
 
 const Reviews = () => {
 
@@ -16,7 +18,9 @@ const Reviews = () => {
     const [fetching, setFetching] = useState(false);
     const [filteredData, setFilteredData] = useState();
     const [showVendorScoringForm, setShowVendorScoringForm] = useState(false);
+    const [showVendorCategorizationForm, setShowVendorCategorizationForm] = useState(false);
     const [vendor, setVendor] = useState();
+    const [showVendorDetail, setShowVendorDetail] = useState(false);
 
     const columns = [
         {
@@ -25,7 +29,10 @@ const Reviews = () => {
             filterable: true,
             sortable: true,
             cell: (row) => (
-                <div className='grid space-y-1 font-extralight py-2 cursor-pointer'>
+                <div 
+                    className='grid space-y-1 font-extralight py-2 cursor-pointer'
+                    onClick={() => openVendorDetailDialog(row?.company_name, row?.email)}
+                >
                     <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
                     <span className='text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
                 </div>
@@ -53,8 +60,11 @@ const Reviews = () => {
                     row?.reviewed_by !== "" && row?.reviewed_by && row?.reviewed_by !== null ? 
                         <span className='font-extralight'>Reviewed by <span className='font-normal'>{row?.reviewed_by}</span></span> : 
                         (row?.completed_by !== "" && row?.completed_by && row?.completed_by !== null ? 
-                            <span className='font-extralight'>Scored by <span className='font-normal'>{row?.completed_by}</span></span> :
-                            <span className='font-extralight'>Completed registration</span>
+                            <span className='font-extralight'>Categorized by <span className='font-normal'>{row?.completed_by}</span></span> :
+                            (row?.vendor_score !== "" && row?.vendor_score && row?.vendor_score !== null ? 
+                                <span className='font-extralight'>Scoring completed</span> :
+                                <span className='font-extralight'>Completed registration</span>
+                            )
                     ) 
                 }
                 </div>
@@ -78,17 +88,27 @@ const Reviews = () => {
                                     Score
                                 </button>
                             </div> : 
-                            (row?.reviewed_by === "" || !row?.reviewed_by || row?.reviewed_by === null) ? 
+                            (row?.completed_by === "" || !row?.completed_by || row?.completed_by === null) ?
                                 <div className='grid space-y-2 py-2'>
-                                    <span className='capitalize font-extralight text-[#a8d13a]'>awaiting review</span>
-                                    <button className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'>review</button>
+                                    <span className='capitalize font-extralight text-[#a8d13a]'>awaiting categorization</span>
+                                    <button 
+                                        className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'
+                                        onClick={() => openVendorCategorizationFormDialog(row?.company_name, row?.email)}
+                                    >
+                                        Categorize
+                                    </button>
                                 </div> :
-                                (row?.vendor_application_status === 'REGISTERED' ? 
-                                    <span className='text-[#54c5d0]'>APPROVED</span> : 
-                                    (row?.vendor_application_status === "REJECTED" && 
-                                        <span className='text-red-500 uppercase'>{row?.vendor_application_status.toLowerCase()}</span>
+                                (row?.reviewed_by === "" || !row?.reviewed_by || row?.reviewed_by === null) ? 
+                                    <div className='grid space-y-2 py-2'>
+                                        <span className='capitalize font-extralight text-[#a8d13a]'>awaiting review</span>
+                                        <button className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'>Review</button>
+                                    </div> :
+                                    (row?.vendor_application_status === 'REGISTERED' ? 
+                                        <span className='text-[#54c5d0]'>APPROVED</span> : 
+                                        (row?.vendor_application_status === "REJECTED" && 
+                                            <span className='text-red-500 uppercase'>{row?.vendor_application_status.toLowerCase()}</span>
+                                    )
                                 )
-                            )
                     }
                 </div>
             )
@@ -102,6 +122,16 @@ const Reviews = () => {
     const openVendorScoreFormDialog = (vendorName, vendorEmail) => {
         setVendor([vendorName, vendorEmail]);
         setShowVendorScoringForm(true)
+    }
+
+    const openVendorCategorizationFormDialog = (vendorName, vendorEmail) => {
+        setVendor([vendorName, vendorEmail]);
+        setShowVendorCategorizationForm(true)
+    }
+
+    const openVendorDetailDialog = (vendorName, vendorEmail) => {
+        setVendor([vendorName, vendorEmail]);
+        setShowVendorDetail(true)
     }
 
     const ftData = useMemo(() => {
@@ -133,6 +163,14 @@ const Reviews = () => {
             {
                 showVendorScoringForm && 
                     <VendorScoringForm setShowVendorScoringForm={setShowVendorScoringForm} vendor={vendor} />
+            }
+            {
+                showVendorCategorizationForm && 
+                    <VendorCategorizationForm setShowVendorCategorizationForm={setShowVendorCategorizationForm} vendor={vendor} />
+            }
+            {
+                showVendorDetail && 
+                    <VendorDetail setsetShowVendorDetail={setShowVendorDetail} vendor={vendor} />
             }
         </div>
     )
