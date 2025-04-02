@@ -33,8 +33,8 @@ const VendorAICategorization = ({ vendordata }) => {
 
 
     return (
-        <div className='w-full md:w-[49%] p-4 my-6 rounded-md shadow-xl border border-gray-300 dark:border-gray-700'>
-            <div className='flex items-center gap-2 pb-1 border-b border-gray-300 dark:border-gray-700'>
+        <div className='w-full md:w-[49%] bg-[#54c5d0] text-black p-4 my-6 rounded-md shadow-xl border border-gray-300 dark:border-gray-700'>
+            <div className='flex items-center gap-2 pb-1 border-b border-gray-300 '>
                 <GiArtificialIntelligence size={20} />
                 <span className='capitalize'>vendor ai categorization</span>
             </div>

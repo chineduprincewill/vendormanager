@@ -58,7 +58,7 @@ const VendorCategorizationForm = ({ setShowVendorCategorizationForm, vendor }) =
                                     </div>
                                     <div className='grid md:flex md:justify-between md:items-baseline space-y-4 md:space-y-0'>
                                         <VendorAICategorization vendordata={vendordata} />
-                                        <VendorManualCategorization vendordata={vendordata} />
+                                        <VendorManualCategorization vendordata={vendordata} setShowVendorCategorizationForm={setShowVendorCategorizationForm} />
                                     </div>
                                 </div>
                         }

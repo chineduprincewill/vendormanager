@@ -11,7 +11,7 @@ import VendorCategorizationForm from './components/VendorCategorizationForm';
 
 const Reviews = () => {
 
-    const { token, record, logout } = useContext(AppContext);
+    const { token, user, record, logout } = useContext(AppContext);
     const [filter, setFilter] = useState("");
     const [vendors, setVendors] = useState(null);
     const [error, setError] = useState(null);
@@ -31,7 +31,7 @@ const Reviews = () => {
             cell: (row) => (
                 <div 
                     className='grid space-y-1 font-extralight py-2 cursor-pointer'
-                    onClick={() => openVendorDetailDialog(row?.company_name, row?.email)}
+                    onClick={() => user && JSON.parse(user)?.category === 'REVIEWER' && openVendorDetailDialog(row?.company_name, row?.email)}
                 >
                     <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
                     <span className='text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
@@ -81,27 +81,34 @@ const Reviews = () => {
                        row?.vendor_score === "" || !row?.vendor_score || row?.vendor_score === null ? 
                             <div className='grid space-y-2 py-2'>
                                 <span className='capitalize font-extralight'>awaiting scoring</span>
-                                <button 
+                                {user && JSON.parse(user)?.category === 'REVIEWER' && <button 
                                     className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'
                                     onClick={() => openVendorScoreFormDialog(row?.company_name, row?.email)}
                                 >
                                     Score
-                                </button>
+                                </button>}
                             </div> : 
                             (row?.completed_by === "" || !row?.completed_by || row?.completed_by === null) ?
                                 <div className='grid space-y-2 py-2'>
                                     <span className='capitalize font-extralight text-[#a8d13a]'>awaiting categorization</span>
-                                    <button 
+                                    {user && JSON.parse(user)?.category === 'REVIEWER' && <button 
                                         className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'
                                         onClick={() => openVendorCategorizationFormDialog(row?.company_name, row?.email)}
                                     >
                                         Categorize
-                                    </button>
+                                    </button>}
                                 </div> :
                                 (row?.reviewed_by === "" || !row?.reviewed_by || row?.reviewed_by === null) ? 
                                     <div className='grid space-y-2 py-2'>
                                         <span className='capitalize font-extralight text-[#a8d13a]'>awaiting review</span>
-                                        <button className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'>Review</button>
+                                        {user && JSON.parse(user)?.category === 'APPROVER' && 
+                                            <button 
+                                                className='max-w-max hover:bg-gray-200 dark:hover:bg-gray-950 px-2 py-1 border shadow-xl text-xs rounded-full'
+                                                onClick={() => openVendorApproveFormDialog(row?.company_name, row?.email)}
+                                            >
+                                                    Review
+                                            </button>
+                                        }
                                     </div> :
                                     (row?.vendor_application_status === 'REGISTERED' ? 
                                         <span className='text-[#54c5d0]'>APPROVED</span> : 
@@ -127,6 +134,11 @@ const Reviews = () => {
     const openVendorCategorizationFormDialog = (vendorName, vendorEmail) => {
         setVendor([vendorName, vendorEmail]);
         setShowVendorCategorizationForm(true)
+    }
+
+    const openVendorApproveFormDialog = (vendorName, vendorEmail) => {
+        setVendor([vendorName, vendorEmail]);
+        setShowVendorDetail(true)
     }
 
     const openVendorDetailDialog = (vendorName, vendorEmail) => {

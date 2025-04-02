@@ -4,10 +4,14 @@ import { AppContext } from '../../../context/AppContext';
 import { fetchVendorDetail } from '../../../apis/vendorsActions';
 import LoadingBars from '../../../common/LoadingBars';
 import { formatDate } from '../../../apis/functions';
+import VendorAICategorization from '../../reviews/components/VendorAICategorization';
+import VendorManualCategorization from '../../reviews/components/VendorManualCategorization';
+import VendorManualCategorizationCard from '../../reviews/components/VendorManualCategorizationCard';
+import ReviewerApprovalForm from '../../reviews/components/ReviewerApprovalForm';
 
 const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
 
-    const { token, logout } = useContext(AppContext);
+    const { token, user, logout } = useContext(AppContext);
     const [detail, setdetail] = useState();
     const [error, setError] = useState(null);
     const [fetching, setFetching] = useState(false);
@@ -47,6 +51,23 @@ const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
                                 </div> : 
                                 <div className='w-full space-y-4'>
                                 {
+                                    user && JSON.parse(user)?.category === "APPROVER" &&
+                                    <div className='w-full grid'>
+                                        <div className='grid md:flex md:justify-between md:items-baseline space-y-4 md:space-y-0'>
+                                            <VendorAICategorization vendordata={detail} />
+                                            <VendorManualCategorizationCard vendordata={detail?.vendor_categorization} />
+                                            
+                                        </div>
+                                    {
+                                        user && JSON.parse(user)?.category === 'APPROVER' ?
+                                            <ReviewerApprovalForm vendordata={detail} setShowVendorCategorizationForm={setsetShowVendorDetail} />
+                                            :
+                                            <VendorManualCategorization vendordata={detail} setShowVendorCategorizationForm={setsetShowVendorDetail} />
+                                    }
+                                        
+                                    </div>
+                                }
+                                {
                                     Object.entries(detail).map((item, index) => (
                                         <div key={index} className='w-full p-4 shadow-xl capitalize'>
                                             <div 
@@ -73,7 +94,7 @@ const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
                                                         <span className='text-xs text-gray-500'>{item?.question_text}</span>
                                                         <span>{item?.answer}</span>
                                                         <span className='text-xs text-gray-500'>{item?.item}</span>
-                                                        <span>{(item?.item && item?.maximum_marks_awarded) ? (Math.floor((item?.marks_scored_by_vendor/item?.maximum_marks_awarded) * 100) + "%") : <span>{item?.marks_scored_by_vendor}</span> }</span>
+                                                        <span>{(item?.item && item?.maximum_marks_awarded) ? (`${item?.marks_scored_by_vendor}/${item?.maximum_marks_awarded} - (`+Math.floor((item?.marks_scored_by_vendor/item?.maximum_marks_awarded) * 100) + "%)") : <span>{item?.marks_scored_by_vendor}</span> }</span>
                                                         {item?.categorization && 
                                                             <div className='grid'>
                                                                 <div className='grid'>
@@ -116,6 +137,7 @@ const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
                                             </div>
                                         </div>
                                     ))
+
                                 }
                                 </div>
                         }
