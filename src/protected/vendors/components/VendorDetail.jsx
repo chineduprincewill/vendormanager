@@ -8,10 +8,13 @@ import VendorAICategorization from '../../reviews/components/VendorAICategorizat
 import VendorManualCategorization from '../../reviews/components/VendorManualCategorization';
 import VendorManualCategorizationCard from '../../reviews/components/VendorManualCategorizationCard';
 import ReviewerApprovalForm from '../../reviews/components/ReviewerApprovalForm';
+import { useLocation } from 'react-router-dom';
 
 const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
 
     const { token, user, logout } = useContext(AppContext);
+
+    const loc = useLocation();
     const [detail, setdetail] = useState();
     const [error, setError] = useState(null);
     const [fetching, setFetching] = useState(false);
@@ -51,7 +54,7 @@ const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
                                 </div> : 
                                 <div className='w-full space-y-4'>
                                 {
-                                    user && JSON.parse(user)?.category === "APPROVER" &&
+                                    user && JSON.parse(user)?.category === "APPROVER" && loc.pathname === '/reviews' &&
                                     <div className='w-full grid'>
                                         <div className='grid md:flex md:justify-between md:items-baseline space-y-4 md:space-y-0'>
                                             <VendorAICategorization vendordata={detail} />
@@ -60,7 +63,7 @@ const VendorDetail = ({ setsetShowVendorDetail, vendor }) => {
                                         </div>
                                     {
                                         user && JSON.parse(user)?.category === 'APPROVER' ?
-                                            <ReviewerApprovalForm vendordata={detail} setShowVendorCategorizationForm={setsetShowVendorDetail} />
+                                            <ReviewerApprovalForm vendordata={detail?.vendor_categorization} setShowVendorCategorizationForm={setsetShowVendorDetail} />
                                             :
                                             <VendorManualCategorization vendordata={detail} setShowVendorCategorizationForm={setsetShowVendorDetail} />
                                     }
