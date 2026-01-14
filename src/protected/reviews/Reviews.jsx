@@ -8,6 +8,7 @@ import ReviewsRecords from './components/ReviewsRecords';
 import VendorScoringForm from './components/VendorScoringForm';
 import VendorDetail from '../vendors/components/VendorDetail';
 import VendorCategorizationForm from './components/VendorCategorizationForm';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 const Reviews = () => {
 
@@ -30,11 +31,46 @@ const Reviews = () => {
             sortable: true,
             cell: (row) => (
                 <div 
-                    className='grid space-y-1 font-extralight py-2 cursor-pointer'
+                    className='flex gap-2 items-center py-2 cursor-pointer'
                     onClick={() => user && JSON.parse(user)?.category === 'REVIEWER' && openVendorDetailDialog(row?.company_name, row?.email)}
-                >
-                    <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
-                    <span className='text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
+                >   
+                    <div className='grid space-y-1 font-extralight'>
+                        <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
+                        <span className='hidden text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
+                    </div>
+                </div>
+            )
+        },
+        {
+            name: "Email",
+            selector: (row) => row?.email,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs font-extralight'>
+                    {row?.email}
+                </div>
+            )
+        },
+        {
+            name: "Contact",
+            selector: (row) => row?.contact_name,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs'>
+                    {row?.contact_name}
+                </div>
+            )
+        },
+        {
+            name: "Mobile",
+            selector: (row) => row?.contact_phoneno,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs'>
+                    {row?.contact_phoneno}
                 </div>
             )
         },
@@ -55,7 +91,7 @@ const Reviews = () => {
             filterable: true,
             sortable: true,
             cell: (row) => (
-                <div className='w-full'>
+                <div className='w-full text-sm'>
                 {
                     row?.reviewed_by !== "" && row?.reviewed_by && row?.reviewed_by !== null ? 
                         <span className='font-extralight'>Reviewed by <span className='font-normal'>{row?.reviewed_by}</span></span> : 
@@ -163,6 +199,9 @@ const Reviews = () => {
 
     return (
         <div className='w-full m-0'>
+            <div className='rounded-md bg-cyan-700 text-white mt-3 px-2 py-2 w-[97%] mx-auto'>
+                <span className='font-semibold'>Click on company name to view company detail</span>
+            </div>
             <ReviewsFilter setFilter={setFilter} />
             <ReviewsLabel filter={filter} />
             <div className='w-full my-4 px-4'>

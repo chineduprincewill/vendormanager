@@ -32,17 +32,29 @@ const Vendors = () => {
                     onClick={() => openVendorDetailDialog(row?.company_name, row?.email)}
                 >
                     <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
-                    <span className='text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
+                    <span className='hidden text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
                 </div>
             )
         },
+        {
+            name: "Email",
+            selector: (row) => row?.email,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs font-extralight'>
+                    {row?.email}
+                </div>
+            )
+        }
+        ,
         {
             name: "Categorization",
             selector: (row) => row?.categorization,
             filterable: true,
             sortable: true,
             cell: (row) => (
-                <div className='w-full font-extralight'>
+                <div className='w-full font-extralight text-sm'>
                     {row?.categorization}
                 </div>
             )
@@ -53,25 +65,33 @@ const Vendors = () => {
             filterable: true,
             sortable: true,
             cell: (row) => (
-                <div className='w-full font-extralight'>
+                <div className='w-full font-extralight text-sm'>
                     {row?.scope}
                 </div>
             )
         },
         {
-            name: "",
-            button: true,
+            name: "Contact",
+            selector: (row) => row?.contact_name,
+            filterable: true,
+            sortable: true,
             cell: (row) => (
-                <div className='flex space-x-2 items-center'>
-                    <FiSearch 
-                        size={20} 
-                        className='cursor-pointer text-[#54c5d0] hover:text-[#348a92]' 
-                        title='vendor detail'
-                        onClick={() => openVendorDetailDialog(row?.company_name, row?.email)}
-                    />
+                <div className='w-full text-xs'>
+                    {row?.contact_name}
                 </div>
             )
         },
+        {
+            name: "Mobile",
+            selector: (row) => row?.contact_phoneno,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs'>
+                    {row?.contact_phoneno}
+                </div>
+            )
+        }
     ];
 
     if(vendors?.status && vendors?.status === 'Token is Expired'){
@@ -125,6 +145,9 @@ const Vendors = () => {
 
     return (
         <div className='w-full m-0'>
+            <div className='rounded-md bg-cyan-700 text-white mt-3 px-2 py-2 w-[97%] mx-auto'>
+                <span className='font-semibold'>Click on company name to view company detail</span>
+            </div>
             <CategorizationFilter 
                 setScope={setScope} 
                 setCategory={setCategory} 

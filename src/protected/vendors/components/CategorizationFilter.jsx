@@ -30,13 +30,13 @@ const CategorizationFilter = ({ setScope, setCategory, scope, category, filterBy
                 <option className='dark:bg-gray-800' value="Not categorized">Not categorized</option>
             </select>
             <select
-                className='w-full md:w-[25%] p-2 rounded-md border bg-transparent'
+                className='w-full md:w-[40%] p-2 rounded-md border bg-transparent text-sm'
                 onChange={(e) => setScope(e.target.value)}
             >
                 <option className='dark:bg-gray-800' value="">{fetching ? 'fetching scope...' : 'select scope'}</option>
             {
                 scopeArray !== null && scopeArray?.scopeArray?.length > 0 && scopeArray?.scopeArray.map((scp, index) => (
-                    <option key={index} value={scp?.scope} className='dark:bg-gray-800'>{scp?.scope}</option>
+                    <option key={index} value={scp?.scope} className='dark:bg-gray-800 text-xs'>{scp?.scope}</option>
                 ))
             }
             </select>
