@@ -9,6 +9,7 @@ import VendorScoringForm from './components/VendorScoringForm';
 import VendorDetail from '../vendors/components/VendorDetail';
 import VendorCategorizationForm from './components/VendorCategorizationForm';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { capitalizeWords } from '../../apis/functions';
 
 const Reviews = () => {
 
@@ -35,8 +36,7 @@ const Reviews = () => {
                     onClick={() => user && JSON.parse(user)?.category === 'REVIEWER' && openVendorDetailDialog(row?.company_name, row?.email)}
                 >   
                     <div className='grid space-y-1 font-extralight'>
-                        <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
-                        <span className='hidden text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
+                        <span>{capitalizeWords(row?.company_name.toLowerCase())}</span>
                     </div>
                 </div>
             )
@@ -49,6 +49,17 @@ const Reviews = () => {
             cell: (row) => (
                 <div className='w-full text-xs font-extralight'>
                     {row?.email}
+                </div>
+            )
+        },
+        {
+            name: "Scope",
+            selector: (row) => row?.scope,
+            filterable: true,
+            sortable: true,
+            cell: (row) => (
+                <div className='w-full text-xs'>
+                    {row?.scope}
                 </div>
             )
         },

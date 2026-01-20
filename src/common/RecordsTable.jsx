@@ -21,7 +21,10 @@ const RecordsTable = ({ columns, data }) => {
                     <FilterComponent data={data} setFilteredData={setFilteredData} />
                 </div>
                 {filteredData !== null && 
-                <DataTableExtensions {...tableData}>
+                <DataTableExtensions
+                 {...tableData}
+                 exportHeaders={true}
+                >
                     <DataTable 
                         columns={columns} data={filteredData}
                         paginationTotalRows={filteredData.totalCount}

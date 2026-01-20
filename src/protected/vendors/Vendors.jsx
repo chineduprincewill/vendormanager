@@ -7,6 +7,7 @@ import LoadingBars from '../../common/LoadingBars';
 import CategorizationRecords from './components/CategorizationRecords';
 import { FiSearch } from 'react-icons/fi';
 import VendorDetail from './components/VendorDetail';
+import { capitalizeWords } from '../../apis/functions';
 
 const Vendors = () => {
 
@@ -31,8 +32,7 @@ const Vendors = () => {
                     className='grid space-y-1 font-extralight py-2 cursor-pointer'
                     onClick={() => openVendorDetailDialog(row?.company_name, row?.email)}
                 >
-                    <span className='capitalize'>{row?.company_name.toLowerCase()}</span>
-                    <span className='hidden text-xs dark:text-[#54c5d0] font-semibold dark:font-normal'>{row?.email}</span>
+                    <span>{capitalizeWords(row?.company_name.toLowerCase())}</span>
                 </div>
             )
         },

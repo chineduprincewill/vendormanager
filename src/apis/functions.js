@@ -438,3 +438,7 @@ export const generateAvatar = (text) => {
     .toUpperCase())
     .join('');
 }
+
+export const capitalizeWords = (str) => {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+}
